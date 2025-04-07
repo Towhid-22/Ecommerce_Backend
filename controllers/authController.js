@@ -1,0 +1,32 @@
+const userModel = require("../model/userModel");
+
+const signupController = async (req, res) => {
+  let { username, email, password, address, city, country, phone } = req.body;
+  try {
+    let user = new userModel({
+      username,
+      email,
+      password,
+      address,
+      city,
+      country,
+      phone
+    });
+    await user.save();
+    return res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      user
+    });
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: err.message || "Something went wrong",
+    });
+  }
+};
+const loginController = (req, res) => {
+  res.send("Login route created");
+};
+
+module.exports = { signupController, loginController };
