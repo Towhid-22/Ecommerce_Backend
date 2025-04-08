@@ -1,3 +1,5 @@
+const emailValidation = require("../helpers/emailValidation");
+const sendEmail = require("../helpers/sendEmail");
 const userModel = require("../model/userModel");
 const bcrypt = require("bcrypt");
 
@@ -11,21 +13,29 @@ const signupController = async (req, res) => {
           message: err.message || "Something went wrong",
         });
       } else {
-        let user = new userModel({
-          username,
-          email,
-          password: hash,
-          address,
-          city,
-          country,
-          phone,
-        });
-        await user.save();
-        return res.status(201).json({
-          success: true,
-          message: "User created successfully",
-          user,
-        });
+        if (!emailValidation(email)) {
+          return res.status(400).json({
+            success: false,
+            message: "Please provide a valid email",
+          });
+        } else {
+          let user = new userModel({
+            username,
+            email,
+            password: hash,
+            address,
+            city,
+            country,
+            phone,
+          });
+          await user.save();
+          sendEmail(email);
+          return res.status(201).json({
+            success: true,
+            message: "User created successfully",
+            user,
+          });
+        }
       }
     });
   } catch (err) {
