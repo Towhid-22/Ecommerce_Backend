@@ -35,12 +35,12 @@ const signupController = async (req, res) => {
           await user.save();
           sendEmail(email, otp);
 
-          setTimeout(() => {
-            userModel.findOneAndUpdate({ email }, { otp: null }).then(() => {
-              console.log(email, "OTP deleted");
-            });
-            user.save();
-          }, 20000);
+          // setTimeout(() => {
+          //   userModel.findOneAndUpdate({ email }, { otp: null }).then(() => {
+          //     console.log(email, "OTP deleted");
+          //   });
+          //   user.save();
+          // }, 30000);
 
           return res.status(201).json({
             success: true,
@@ -59,7 +59,33 @@ const signupController = async (req, res) => {
 };
 const loginController = (req, res) => {
   res.send("login user route");
-  // res.send(random_OTP());
 };
 
-module.exports = { signupController, loginController };
+const otpController = async (req, res) => {
+  let { email, otp } = req.body;
+  // res.send(req.body);
+  try {
+    const otpverify = await userModel.findOne({ email });
+    if (otpverify.otp == otp) {
+      otpverify.isVerify = true;
+      otpverify.otp = null;
+      await otpverify.save();
+      return res.status(200).json({
+        success: true,
+        message: "User verified successfully",
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "OTP not matched",
+      });
+    }
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: err.message || "Something went wrong",
+    });
+  }
+};
+
+module.exports = { signupController, loginController, otpController };
