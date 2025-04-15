@@ -3,6 +3,7 @@ const random_OTP = require("../helpers/random-otp");
 const sendEmail = require("../helpers/sendEmail");
 const userModel = require("../model/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const signupController = async (req, res) => {
   let { username, email, password, address, city, country, phone } = req.body;
@@ -57,8 +58,50 @@ const signupController = async (req, res) => {
     });
   }
 };
-const loginController = (req, res) => {
-  res.send("login user route");
+const loginController = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const existingUser = await userModel.findOne({ email });
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    } else {
+      bcrypt.compare(password, existingUser.password, function (err, result) {
+        if (!err) {
+          if (result) {
+            const userData = {
+              id: existingUser._id,
+              email: existingUser.email,
+              role: existingUser.role,
+            };
+           
+
+            return res.status(200).json({
+              message: "Login Sccessfull",
+              data: userData,
+              token: token,
+            });
+          } else {
+            return res.status(400).json({
+              success: false,
+              message: "Password not matched",
+            });
+          }
+        } else {
+          return res.status(500).json({
+            success: false,
+            message: err,
+          });
+        }
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
 };
 
 const otpController = async (req, res) => {
@@ -66,7 +109,12 @@ const otpController = async (req, res) => {
   // res.send(req.body);
   try {
     const otpverify = await userModel.findOne({ email });
-    if (otpverify.otp == otp) {
+    if (!otpverify) {
+      return res.status(400).json({
+        success: false,
+        message: "Email not found",
+      });
+    } else if (otpverify.otp == otp) {
       otpverify.isVerify = true;
       otpverify.otp = null;
       await otpverify.save();
