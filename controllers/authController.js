@@ -75,12 +75,11 @@ const loginController = async (req, res) => {
               email: existingUser.email,
               role: existingUser.role,
             };
-           
+            req.session.user = userData;
 
             return res.status(200).json({
               message: "Login Sccessfull",
               data: userData,
-              token: token,
             });
           } else {
             return res.status(400).json({
