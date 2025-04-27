@@ -18,11 +18,6 @@ app.use(
 
 const router = require("./router");
 
-app.get("/users", (req, res) => {
-  res.send(req.session.id);
-  console.log(req.session.user);
-});
-// database connection
 connectDB();
 // localhost:4000
 app.use(express.json());

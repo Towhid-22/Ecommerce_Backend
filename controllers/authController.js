@@ -76,6 +76,7 @@ const loginController = async (req, res) => {
               role: existingUser.role,
             };
             req.session.user = userData;
+            console.log(req.session.user);
 
             return res.status(200).json({
               message: "Login Sccessfull",
