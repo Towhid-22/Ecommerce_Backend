@@ -145,7 +145,45 @@ const logOutController = async (req, res) => {
     }
   });
 };
-
+const resetPasswordController = async (req, res) => {
+  let { email, oldpassword, newpassword } = req.body;
+  try {
+    const existingUser = await userModel.findOne({ email });
+    bcrypt.compare(oldpassword, existingUser.password, function (err, result) {
+      if (err) {
+        return res.status(500).json({ success: false, message: err });
+      } else {
+        if (result) {
+          bcrypt.hash(newpassword, 10, async function (err, hashpassword) {
+            if (err) {
+              return res.status(500).json({ success: false, message: err });
+            } else {
+              const updatepassword = await userModel.findOneAndUpdate(
+                { email },
+                { password: hashpassword },
+                { new: true }
+              );
+              console.log(updatepassword)
+              updatepassword.save();
+              return res.status(200).json({
+                success: true,
+                message: "password change successfull",
+              });
+            }
+          });
+        } else {
+          return res
+            .status(400)
+            .json({ success: false, message: "password not match" });
+        }
+      }
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Something is wrong error" });
+  }
+};
 
 module.exports = {
   signupController,
