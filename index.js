@@ -13,6 +13,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, maxAge: 1000 * 60 },
+    name: "ecommerce"
   })
 );
 

@@ -3,7 +3,7 @@ const random_OTP = require("../helpers/random-otp");
 const sendEmail = require("../helpers/sendEmail");
 const userModel = require("../model/userModel");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 
 const signupController = async (req, res) => {
   let { username, email, password, address, city, country, phone } = req.body;
@@ -85,7 +85,7 @@ const loginController = async (req, res) => {
           } else {
             return res.status(400).json({
               success: false,
-              message: "Password not matched",
+              message: "Invalid password",
             });
           }
         } else {
@@ -103,7 +103,6 @@ const loginController = async (req, res) => {
     });
   }
 };
-
 const otpController = async (req, res) => {
   let { email, otp } = req.body;
   // res.send(req.body);
@@ -135,5 +134,23 @@ const otpController = async (req, res) => {
     });
   }
 };
+const logOutController = async (req, res) => {
+  res.clearCookie("ecommerce");
 
-module.exports = { signupController, loginController, otpController };
+  req.session.destroy(function (err) {
+    if (err) {
+      return res.status(500).json({ success: false, message: err });
+    } else {
+      res.status(200).json({ success: true, message: "Logout Successfull" });
+    }
+  });
+};
+
+
+module.exports = {
+  signupController,
+  loginController,
+  otpController,
+  logOutController,
+  resetPasswordController,
+};

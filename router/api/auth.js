@@ -3,6 +3,8 @@ const {
   signupController,
   loginController,
   otpController,
+  logOutController,
+  resetPasswordController,
 } = require("../../controllers/authController");
 const userModel = require("../../model/userModel");
 const authMiddleware = require("../../middleware/authMiddleware");
@@ -13,6 +15,8 @@ const router = express.Router();
 router.post("/signup", signupController);
 router.post("/login", loginController);
 router.post("/checkotp", otpController);
+router.post("/logout", logOutController);
+router.patch("/reset-password", resetPasswordController);
 
 router.get("/authuser", authMiddleware, async (req, res) => {
   try {
