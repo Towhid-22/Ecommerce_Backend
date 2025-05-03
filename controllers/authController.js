@@ -75,8 +75,14 @@ const loginController = async (req, res) => {
               email: existingUser.email,
               role: existingUser.role,
             };
+            if (existingUser.role == "admin") {
+              req.session.cookie.maxAge = 5 * 60 * 1000;
+            } else {
+              req.session.cookie.maxAge = 24 * 60 * 60 * 1000;
+            }
+
             req.session.user = userData;
-            console.log(req.session.user);
+            // console.log(req.session.user);
 
             return res.status(200).json({
               message: "Login Sccessfull",
@@ -163,7 +169,6 @@ const resetPasswordController = async (req, res) => {
                 { password: hashpassword },
                 { new: true }
               );
-              console.log(updatepassword)
               updatepassword.save();
               return res.status(200).json({
                 success: true,
@@ -179,9 +184,7 @@ const resetPasswordController = async (req, res) => {
       }
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Something is wrong error" });
+    return res.status(500).json({ success: false, message: error });
   }
 };
 

@@ -12,16 +12,22 @@ app.use(
     secret: process.env.sessionsecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 1000 * 60 },
-    name: "ecommerce"
+    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
+    name: "ecommerce",
   })
 );
 
 const router = require("./router");
+const adminMiddleware = require("./middleware/adminMiddleware");
+
+app.get("/test", adminMiddleware, (req, res) => {
+  res.send(req.session.user);
+});
 
 connectDB();
 // localhost:4000
 app.use(express.json());
+app.use(express.static("uploads"))
 app.use(router);
 
 app.listen(PORT, () => {
