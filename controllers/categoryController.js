@@ -35,7 +35,7 @@ async function addcategoryController(req, res) {
 
 async function getAllCategories(req, res) {
   try {
-    let allCategories = await categoryModel.find({});
+    let allCategories = await categoryModel.find({}).sort({ createdAt: -1 });
 
     if (allCategories.length == 0) {
       return res
