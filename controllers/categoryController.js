@@ -35,7 +35,10 @@ async function addcategoryController(req, res) {
 
 async function getAllCategories(req, res) {
   try {
-    let allCategories = await categoryModel.find({}).sort({ createdAt: -1 });
+    let allCategories = await categoryModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .populate("subcategory"); // add populate for get subcategory details
 
     if (allCategories.length == 0) {
       return res

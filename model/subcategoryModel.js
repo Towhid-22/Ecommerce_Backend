@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 
-const categoryModel = new mongoose.Schema(
+const subcategorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -9,10 +9,6 @@ const categoryModel = new mongoose.Schema(
       minlength: [3, "Username must be more than 3 characters"],
       trim: true,
       unique: true,
-    },
-    image: {
-      type: String,
-      required: true,
     },
     description: {
       type: String,
@@ -23,16 +19,14 @@ const categoryModel = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    subcategory: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Subcategory",
-      },
-    ],
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Category", categoryModel);
+module.exports = mongoose.model("Subcategory", subcategorySchema);
