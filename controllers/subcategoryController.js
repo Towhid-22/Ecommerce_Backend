@@ -19,7 +19,8 @@ async function addSubcategoryController(req, res) {
 
     const updatecategory = await categoryModel.findOneAndUpdate(
       { _id: category },
-      { $push: { subcategory: subcategory._id } },{ new: true }
+      { $push: { subcategory: subcategory._id } },
+      { new: true }
     );
 
     await updatecategory.save();
@@ -38,4 +39,80 @@ async function addSubcategoryController(req, res) {
   }
 }
 
-module.exports = { addSubcategoryController };
+async function deleteSubcategoryController(req, res) {
+  try {
+    const { id } = req.params;
+
+    const deleteSubcategory = await subcategoryModel.findOneAndDelete({
+      _id: id,
+    });
+    await categoryModel.findOneAndUpdate(
+      { subcategory: id },
+      { $pull: { subcategory: id } },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "subcategory delete successfull",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "something went wrong",
+    });
+  }
+}
+
+async function updateSubcategoryController(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, description } = req.body;
+    const slug = slugify(name, {
+      replacement: "_",
+      lower: true,
+    });
+
+    const updateSubcategory = await subcategoryModel.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      { name, description, slug },
+      { new: true }
+    );
+    return res.status(200).json({
+      success: true,
+      message: "subcategory update successfull",
+      data: updateSubcategory,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "something went wrong",
+    });
+  }
+}
+
+async function getSubcategoryByCategoryController(req, res) {
+  try {
+    const { id } = req.params;
+    const getsubcategory = await subcategoryModel.find({ category: id })
+    return res.status(200).json({
+      success: true,
+      message: "subcategory fetch successfull",
+      data: getsubcategory,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "something went wrong",
+    });
+  }
+}
+
+module.exports = {
+  addSubcategoryController,
+  deleteSubcategoryController,
+  updateSubcategoryController,
+  getSubcategoryByCategoryController,
+};
