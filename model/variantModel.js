@@ -14,6 +14,7 @@ const variantSchema = new mongoose.Schema(
     size: {
       type: String,
       trim: true,
+      enum: ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "4XL", "5XL", "6XL"],
     },
     stock: {
       type: Number,
@@ -22,6 +23,10 @@ const variantSchema = new mongoose.Schema(
     },
     image: {
       type: String,
+    },
+    sku: {
+      type: String,
+      trim: true,
     },
   },
   {
