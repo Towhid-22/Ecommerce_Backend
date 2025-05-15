@@ -3,6 +3,8 @@ const router = express.Router();
 const authRouter = require("./auth");
 const categoryRouter = require("./category");
 const subcategoryRouter = require("./subcategory");
+const productRouter = require("./product");
+const variantRouter = require("./variant");
 
 // localhost:4000/api/v1/auth
 router.use("/auth", authRouter);
@@ -10,5 +12,9 @@ router.use("/auth", authRouter);
 router.use("/category", categoryRouter);
 // localhost:4000/api/v1/subcategory
 router.use("/subcategory", subcategoryRouter);
+// localhost:4000/api/v1/product
+router.use("/product", productRouter);
+// localhost:4000/api/v1/variant
+router.use("/variant", variantRouter);
 
 module.exports = router;
