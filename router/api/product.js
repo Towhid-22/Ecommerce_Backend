@@ -11,4 +11,5 @@ router.post("/add-product", upload.single("thumbnail"), addProductController);
 router.get("/get-products", getProductsController);
 router.get("/single-product/:id", getSingleProductController);
 
+
 module.exports = router;
