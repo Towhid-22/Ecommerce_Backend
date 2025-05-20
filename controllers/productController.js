@@ -3,6 +3,8 @@ const productModel = require("../model/productModel");
 const categoryModel = require("../model/categoryModel");
 const subcategoryModel = require("../model/subcategoryModel");
 const { all } = require("../router/api/variant");
+const path = require("path");
+const fs = require("fs");
 
 async function addProductController(req, res) {
   try {
@@ -103,11 +105,45 @@ async function getSingleProductController(req, res) {
   }
 }
 
+async function deleteProductController(req, res) {
+  try {
+    const { id } = req.params;
+    const deleteproduct = await productModel.findByIdAndDelete(id);
 
+    if (!deleteproduct) {
+      return res.status(404).json({
+        success: false,
+        message: "product not found",
+      });
+    } else {
+      const oldpath = path.join(__dirname, "../uploads");
+      const fullimagepath = deleteproduct.thumbnail?.split("/");
+      const imagepath = fullimagepath[fullimagepath.length - 1];
+      fs.unlink(`${oldpath}/${imagepath}`, async (err) => {
+        if (err) {
+          return res.status(500).json({
+            success: false,
+            message: err.message || "something went wrong",
+          });
+        } else {
+          return res.status(200).json({
+            success: true,
+            message: "product delete successfull",
+          });
+        }
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "something went wrong",
+    });
+  }
+}
 
 module.exports = {
   addProductController,
   getProductsController,
   getSingleProductController,
-  
+  deleteProductController,
 };
