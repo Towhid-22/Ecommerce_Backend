@@ -76,4 +76,35 @@ async function getProductsController(req, res) {
   }
 }
 
-module.exports = { addProductController, getProductsController };
+async function getSingleProductController(req, res) {
+  const { id } = req.params;
+  try {
+    const singleproduct = await productModel
+      .findById(id)
+      .populate("variant category subcategory");
+
+    if (!singleproduct) {
+      return res.status(404).json({
+        success: false,
+        message: "product not found",
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: "single product",
+        data: singleproduct,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "something went wrong",
+    });
+  }
+}
+
+module.exports = {
+  addProductController,
+  getProductsController,
+  getSingleProductController,
+};

@@ -1,6 +1,8 @@
 const { default: slugify } = require("slugify");
 const productModel = require("../model/productModel");
 const variantModel = require("../model/variantModel");
+const path = require("path");
+const fs = require("fs");
 
 async function add_variantController(req, res) {
   try {
@@ -55,4 +57,56 @@ async function add_variantController(req, res) {
   }
 }
 
-module.exports = { add_variantController };
+async function delete_variantController(req, res) {
+  try {
+    const { id } = req.params;
+    const variant = await variantModel.findOneAndDelete({ _id: id });
+
+    if (!variant) {
+      return res
+        .status(404)
+        .json({ success: false, message: "variant not found" });
+    } else {
+      if (variant.image) {
+        const oldpath = path.join(__dirname, "../uploads");
+        const fullimagepath = variant.image.split("/");
+        const imagepath = fullimagepath[fullimagepath.length - 1];
+
+        fs.unlink(`${oldpath}/${imagepath}`, (err) => {
+          if (err) {
+            return res.status(500).json({
+              success: false,
+              message: err.message || "something went wrong",
+            });
+          } else {
+            const productupdate = productModel.findOneAndUpdate(
+              { variant: id },
+              { $pull: { variant: id } },
+              { new: true }
+            );
+            productupdate.save();
+            return res.status(200).json({
+              success: true,
+              message: "variant delete successfull",
+            });
+          }
+        });
+      } else {
+        const productupdate = productModel.findOneAndUpdate(
+          { variant: id },
+          { $pull: { variant: id } },
+          { new: true }
+        );
+        productupdate.save();
+        return res.status(200).json({
+          success: true,
+          message: "variant delete successfull",
+        });
+      }
+    }
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+module.exports = { add_variantController, delete_variantController };
