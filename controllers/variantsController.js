@@ -79,12 +79,12 @@ async function delete_variantController(req, res) {
               message: err.message || "something went wrong",
             });
           } else {
-            const productupdate = productModel.findOneAndUpdate(
-              { variant: id },
-              { $pull: { variant: id } },
-              { new: true }
-            );
-            productupdate.save();
+            // const productupdate = productModel.findOneAndUpdate(
+            //   { variant: id },
+            //   { $pull: { variant: id } },
+            //   { new: true }
+            // );
+            // productupdate.save();
             return res.status(200).json({
               success: true,
               message: "variant delete successfull",
@@ -92,12 +92,12 @@ async function delete_variantController(req, res) {
           }
         });
       } else {
-        const productupdate = productModel.findOneAndUpdate(
-          { variant: id },
-          { $pull: { variant: id } },
-          { new: true }
-        );
-        productupdate.save();
+        // const productupdate = productModel.findOneAndUpdate(
+        //   { variant: id },
+        //   { $pull: { variant: id } },
+        //   { new: true }
+        // );
+        // productupdate.save();
         return res.status(200).json({
           success: true,
           message: "variant delete successfull",

@@ -5,6 +5,7 @@ const categoryRouter = require("./category");
 const subcategoryRouter = require("./subcategory");
 const productRouter = require("./product");
 const variantRouter = require("./variant");
+const cartRouter = require("./cart");
 
 // localhost:4000/api/v1/auth
 router.use("/auth", authRouter);
@@ -16,5 +17,7 @@ router.use("/subcategory", subcategoryRouter);
 router.use("/product", productRouter);
 // localhost:4000/api/v1/variant
 router.use("/variant", variantRouter);
+// localhost:4000/api/v1/cart
+router.use("/cart",cartRouter)
 
 module.exports = router;
