@@ -1,10 +1,13 @@
 const express = require("express");
 const app = express();
 const connectDB = require("./config/db");
+const cors = require('cors')
 require("dotenv").config();
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const PORT = process.env.PORT || 3000;
+
+app.use(cors())
 
 app.use(
   session({
