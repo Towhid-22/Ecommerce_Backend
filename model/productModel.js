@@ -31,13 +31,17 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    variant:[
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+    variant: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Variant",
       },
-    ]
-  }, 
+    ],
+  },
   {
     timestamps: true,
   }
