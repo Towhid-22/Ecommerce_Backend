@@ -61,9 +61,16 @@ async function addProductController(req, res) {
 }
 
 async function getProductsController(req, res) {
+  const { category, minprice, maxprice } = req.query;
+
+  console.log("category", category);
   try {
     const allProducts = await productModel
-      .find({})
+      .find({
+        ...(category && { category }),
+        ...(minprice && { price: { $gte: minprice } }),
+        ...(maxprice && { price: { $lte: maxprice } }),
+      })
       .populate("variant category subcategory");
     return res.status(200).json({
       success: true,
@@ -145,7 +152,8 @@ async function featuresProductController(req, res) {
   try {
     const featuresProduct = await productModel
       .find({ featured: true })
-      .populate("category").select("category slug title")
+      .populate("category")
+      .select("category slug title image");
 
     if (featuresProduct.length == 0) {
       return res.status(404).json({
