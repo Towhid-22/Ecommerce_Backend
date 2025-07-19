@@ -11,7 +11,7 @@ const upload = require("../../helpers/uploadimage");
 
 router.post("/add-product", upload.single("thumbnail"), addProductController);
 router.get("/get-products", getProductsController);
-router.get("/single-product/:id", getSingleProductController);
+router.get("/single-product/:slug", getSingleProductController);
 router.delete("/delete-product/:id", deleteProductController);
 router.get("/get-features-products", featuresProductController)
 

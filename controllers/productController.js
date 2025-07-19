@@ -86,10 +86,10 @@ async function getProductsController(req, res) {
 }
 
 async function getSingleProductController(req, res) {
-  const { id } = req.params;
+  const { slug } = req.params;
   try {
     const singleproduct = await productModel
-      .findById(id)
+      .findOne({ slug })
       .populate("variant category subcategory");
 
     if (!singleproduct) {
