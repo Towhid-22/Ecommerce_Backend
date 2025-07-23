@@ -30,9 +30,7 @@ async function add_variantController(req, res) {
       replacement: "_",
     });
 
-    const colorPort = color
-      ? `-${slugify(color, { lower: TextTrackCue })}`
-      : "";
+    const colorPort = color ? `-${slugify(color, { lower: true })}` : "";
     const sizePort = size ? `-${slugify(size, { lower: true })}` : "";
     const sku = `${basesku}${colorPort}${sizePort}-${
       Math.round(Math.random()) + 10

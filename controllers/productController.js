@@ -71,6 +71,7 @@ async function getProductsController(req, res) {
         ...(minprice && { price: { $gte: minprice } }),
         ...(maxprice && { price: { $lte: maxprice } }),
       })
+      .sort({ createdAt: -1 })
       .populate("variant category subcategory");
     return res.status(200).json({
       success: true,
@@ -89,7 +90,7 @@ async function getSingleProductController(req, res) {
   const { slug } = req.params;
   try {
     const singleproduct = await productModel
-      .findOne({ slug })
+      .findOne({ slug: slug })
       .populate("variant category subcategory");
 
     if (!singleproduct) {
@@ -153,7 +154,7 @@ async function featuresProductController(req, res) {
     const featuresProduct = await productModel
       .find({ featured: true })
       .populate("category")
-      .select("category slug title image");
+      .select("category slug title thumbnail price description");
 
     if (featuresProduct.length == 0) {
       return res.status(404).json({
