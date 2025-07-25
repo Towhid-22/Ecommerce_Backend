@@ -42,11 +42,17 @@ const signupController = async (req, res) => {
           //   });
           //   user.save();
           // }, 30000);
+          const userInfo = {
+            id: user._id,
+            email: user.email,
+            role: user.role,
+            username: user.username,
+          };
 
           return res.status(201).json({
             success: true,
             message: "User created successfully",
-            user,
+            user: userInfo,
           });
         }
       }
@@ -74,6 +80,7 @@ const loginController = async (req, res) => {
               id: existingUser._id,
               email: existingUser.email,
               role: existingUser.role,
+              username: existingUser.username,
             };
             if (existingUser.role == "admin") {
               req.session.cookie.maxAge = 5 * 60 * 1000;
@@ -87,6 +94,7 @@ const loginController = async (req, res) => {
             return res.status(200).json({
               message: "Login Sccessfull",
               data: userData,
+              success: true,
             });
           } else {
             return res.status(400).json({
