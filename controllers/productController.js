@@ -174,10 +174,41 @@ async function featuresProductController(req, res) {
     });
   }
 }
+
+async function searchProductController(req, res) {
+  try {
+    const { search } = req.query;
+    if (!search) {
+      return res.status(200).json({
+        success: true,
+        message: "search product",
+        data: [],
+      });
+    }
+    const products = await productModel.find({
+      $or: [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ],
+    });
+    return res.status(200).json({
+      success: true,
+      message: "search product",
+      data: products,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
 module.exports = {
   addProductController,
   getProductsController,
   getSingleProductController,
   deleteProductController,
   featuresProductController,
+  searchProductController,
 };
