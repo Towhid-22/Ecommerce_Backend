@@ -21,7 +21,12 @@ router.patch("/reset-password", resetPasswordController);
 router.get("/authuser", authMiddleware, async (req, res) => {
   try {
     let userdata = await userModel.findOne({ _id: req.session.user.id });
-    return res.status(200).json({ success: true, data: userdata });
+    let user = {
+      username: userdata.username,
+      email: userdata.email,
+      role: userdata.role,
+    }
+    return res.status(200).json({ success: true, data: user });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
