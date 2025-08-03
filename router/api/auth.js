@@ -25,7 +25,8 @@ router.get("/authuser", authMiddleware, async (req, res) => {
       username: userdata.username,
       email: userdata.email,
       role: userdata.role,
-    }
+      _id: userdata._id,
+    };
     return res.status(200).json({ success: true, data: user });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
