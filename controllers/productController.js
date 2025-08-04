@@ -8,7 +8,7 @@ const fs = require("fs");
 
 async function addProductController(req, res) {
   try {
-    let { title, description, category, subcategory, thumbnail, price } =
+    let { title, description, category, subcategory, thumbnail, price, stock } =
       req.body;
 
     const slug = slugify(title, {
@@ -23,6 +23,7 @@ async function addProductController(req, res) {
       slug,
       thumbnail: `${process.env.SERVER_URL}/${req.file.filename}`,
       price,
+      stock,
     });
 
     await product.save();

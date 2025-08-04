@@ -35,6 +35,11 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    stock: {
+      type: Number,
+      required: [true, "Stock is required"],
+      trim: true,
+    },
     variant: [
       {
         type: mongoose.Schema.Types.ObjectId,

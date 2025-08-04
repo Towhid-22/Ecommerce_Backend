@@ -79,7 +79,7 @@ async function updateCartController(req, res) {
   try {
     const { id } = req.params;
     const { quantity } = req.body;
-    const cart = await cartModel.findById(id);
+    const cart = await cartModel.findById(id).populate("product variant")
     if (req.user.id == cart.user) {
       let cartUpdate = await cartModel.findOneAndUpdate(
         { _id: id },
