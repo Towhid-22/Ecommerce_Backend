@@ -18,9 +18,13 @@ const cartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Variant",
     },
+     totalPrice: {
+      type: Number,
+    },
     price: {
       type: Number,
     },
+   
   },
   {
     timestamps: true,
