@@ -113,9 +113,45 @@ async function updateCartController(req, res) {
   }
 }
 
+async function cartTotalController(req, res) {
+  try {
+    const { totalPrice } = req.params;
+    // Find all cart items for the logged-in user
+    const cartItems = await cartModel
+      .find({ totalPrice })
+      .populate("product variant");
+
+    if (!cartItems || cartItems.length === 0) {
+      return res.status(200).json({ subtotal: 0, items: [] });
+    }
+
+    const subtotal = cartItems.reduce((total, item) => {
+      let price = 0;
+
+      // If variant has price, use it, else use product price
+      if (item.variant && item.variant.price) {
+        price = item.variant.price;
+      } else if (item.product && item.product.price) {
+        price = item.product.price;
+      }
+
+      return total + price * item.quantity;
+    }, 0);
+
+    res.status(200).json({
+      subtotal,
+      items: cartItems,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
+
 module.exports = {
   addToCartController,
   getCartController,
   deleteCartController,
   updateCartController,
+  cartTotalController,
 };

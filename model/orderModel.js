@@ -1,57 +1,65 @@
 const { default: mongoose } = require("mongoose");
 
-const orderSchema = new mongoose.Schema({
-  cartItems: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      quantity: {
-        type: Number,
+const orderSchema = new mongoose.Schema(
+  {
+    cartItems: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+        quantity: {
+          type: Number,
+        },
+        variant: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Variant",
+        },
       },
+    ],
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-  ],
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+    phone: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    postcode: {
+      type: String,
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "online"],
+      default: "COD",
+    },
+    totalprice: {
+      type: Number,
+      // default: 0,
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["notpaid", "paid"],
+      default: "notpaid",
+    },
+    orderStatus: {
+      type: String,
+      enum: ["processing", "shipped", "delivered", "cancelled"],
+      default: "processing",
+    },
   },
-  phone: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
-  postcode: {
-    type: String,
-  },
-  paymentMethod: {
-    type: String,
-    enum: ["COD", "online"],
-    default: "COD",
-  },
-  totalprice: {
-    type: Number,
-  },
-  paymentStatus: {
-    type: String,
-    enum: ["notpaid", "paid"],
-    default: "notpaid",
-  },
-  orderStatus: {
-    type: String,
-    enum: ["processing", "shipped", "delivered", "cancelled"],
-    default: "processing",
-  },
-  orderDate: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("Order", orderSchema);

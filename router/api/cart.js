@@ -4,6 +4,7 @@ const {
   getCartController,
   deleteCartController,
   updateCartController,
+  cartTotalController,
 } = require("../../controllers/cartController");
 const authMiddleware = require("../../middleware/authMiddleware");
 const router = express.Router();
@@ -16,5 +17,6 @@ router.delete(
   deleteCartController
 );
 router.patch("/update-quantity/:id", authMiddleware, updateCartController);
+router.get("/cart-total", cartTotalController);
 
 module.exports = router;

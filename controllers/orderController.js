@@ -21,8 +21,7 @@ async function placeOrderController(req, res) {
       !city ||
       !postcode ||
       !paymentMethod ||
-      !cartItems ||
-      !totalprice
+      !cartItems
     ) {
       return res
         .status(400)
@@ -37,7 +36,6 @@ async function placeOrderController(req, res) {
           city,
           postcode,
           paymentMethod,
-          totalprice,
         });
         newOrder.save();
         res.status(200).json({
@@ -56,4 +54,21 @@ async function placeOrderController(req, res) {
   }
 }
 
-module.exports = { placeOrderController };
+async function getOrderController(req, res) {
+  try {
+    const orders = await orderModel
+      .find()
+      .populate("user")
+      .populate("cartItems.product")
+      .populate("cartItems.quantity");
+    res.status(200).json({
+      success: true,
+      message: "Order Fetch Successfull",
+      data: orders,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+module.exports = { placeOrderController, getOrderController };
