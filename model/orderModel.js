@@ -39,7 +39,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["COD", "online"],
+      enum: ["COD", "ONLINE"],
       default: "COD",
     },
     totalprice: {
@@ -50,6 +50,9 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ["notpaid", "paid"],
       default: "notpaid",
+    },
+    transId: {
+      type: String,
     },
     orderStatus: {
       type: String,
