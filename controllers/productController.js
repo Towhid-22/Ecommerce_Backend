@@ -64,7 +64,6 @@ async function addProductController(req, res) {
 async function getProductsController(req, res) {
   const { category, minprice, maxprice } = req.query;
 
-  console.log("category", category);
   try {
     const allProducts = await productModel
       .find({
