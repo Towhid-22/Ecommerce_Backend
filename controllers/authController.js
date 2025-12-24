@@ -3,7 +3,6 @@ const random_OTP = require("../helpers/random-otp");
 const sendEmail = require("../helpers/sendEmail");
 const userModel = require("../model/userModel");
 const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
 
 const signupController = async (req, res) => {
   let { username, email, password, address, city, country, phone } = req.body;
@@ -49,6 +48,13 @@ const signupController = async (req, res) => {
             username: user.username,
           };
 
+          if (user.role === "admin") {
+            req.session.cookie.maxAge = 5 * 60 * 1000;
+          } else {
+            req.session.cookie.maxAge = 24 * 60 * 60 * 1000;
+          }
+          req.session.user = userInfo;
+
           return res.status(201).json({
             success: true,
             message: "User created successfully",
@@ -64,6 +70,7 @@ const signupController = async (req, res) => {
     });
   }
 };
+
 const loginController = async (req, res) => {
   const { email, password } = req.body;
   try {
