@@ -32,21 +32,22 @@ app.use(
 
 app.use(express.json());
 
-app.use(express.static("uploads"));
-
+app.use("/uploads", express.static("uploads"));
+app.set("trust proxy", 1);
 app.use(
   session({
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URL,
+      ttl: 24 * 60 * 60,
     }),
     secret: process.env.sessionsecret,
     resave: false,
     saveUninitialized: false,
     name: "ecommerce",
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
     },
   }),
