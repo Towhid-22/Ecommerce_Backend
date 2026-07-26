@@ -10,7 +10,7 @@ async function addBannerOneController(req, res) {
         .json({ success: false, message: "Banner image is required" });
     }
     const addBannerOne = new bannerOneModel({
-      image: `${process.env.SERVER_URL}/${req.file.filename}`,
+      image: `${process.env.SERVER_URL}/uploads/${req.file.filename}`,
       href,
     });
     await addBannerOne.save();

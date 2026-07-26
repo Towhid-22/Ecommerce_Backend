@@ -21,7 +21,7 @@ async function addProductController(req, res) {
       category,
       subcategory,
       slug,
-      thumbnail: `${process.env.SERVER_URL}/${req.file.filename}`,
+      thumbnail: `${process.env.SERVER_URL}/uploads/${req.file.filename}`,
       price,
       stock,
     });
@@ -61,38 +61,6 @@ async function addProductController(req, res) {
   }
 }
 
-// async function getProductsController(req, res) {
-//   const { category, minprice, maxprice, sort } = req.query;
-
-//   try {
-//     const sortOption = {
-//       ...(sort === "newest" && { createdAt: -1 }),
-//       ...(sort === "oldest" && { createdAt: 1 }),
-//       ...(sort === "low_to_high" && { price: 1 }),
-//       ...(sort === "high_to_low" && { price: -1 }),
-//       ...(sort === "name_asc" && { name: 1 }),
-//       ...(sort === "name_desc" && { name: -1 }),
-//     };
-//     const allProducts = await productModel
-//       .find({
-//         ...(category && { category }),
-//         ...(minprice && { price: { $gte: minprice } }),
-//         ...(maxprice && { price: { $lte: maxprice } }),
-//       })
-//       .populate("variant category subcategory")
-//       .sort(Object.keys(sortOption).length ? sortOption : { createdAt: -1 });
-//     return res.status(200).json({
-//       success: true,
-//       message: "all products",
-//       data: allProducts,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: error.message || "something went wrong",
-//     });
-//   }
-// }
 
 const getProductsController = async (req, res) => {
   const { category, minprice, maxprice, sort } = req.query;

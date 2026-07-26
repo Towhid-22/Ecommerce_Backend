@@ -13,7 +13,7 @@ async function add_variantController(req, res) {
       color,
       size,
       stock,
-      image: req.file && `${process.env.SERVER_URL}/${req.file.filename}`,
+      image: req.file && `${process.env.SERVER_URL}/uploads/${req.file.filename}`,
     });
     await variant.save();
 
@@ -136,7 +136,7 @@ async function update_variantController(req, res) {
           const updatevariant = await variantModel.findOneAndUpdate(
             { _id: id },
             {
-              image: `${process.env.SERVER_URL}/${req.file.filename}`,
+              image: `${process.env.SERVER_URL}/uploads/${req.file.filename}`,
               color,
               size,
               stock,
