@@ -9,9 +9,13 @@ const PORT = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://sandbox.sslcommerz.com"],
+    origin: [
+      "http://localhost:3000",
+      "https://sandbox.sslcommerz.com",
+      "https://clicon-ecommerce-1.onrender.com",
+    ],
     credentials: true,
-  })
+  }),
 );
 
 app.use(
@@ -22,7 +26,7 @@ app.use(
     saveUninitialized: false,
     cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
     name: "ecommerce",
-  })
+  }),
 );
 
 const router = require("./router");
