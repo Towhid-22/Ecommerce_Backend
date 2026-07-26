@@ -59,8 +59,8 @@ async function placeOrderController(req, res) {
         total_amount: 1100,
         currency: "BDT",
         tran_id: tran_id,
-        success_url: `http://localhost:4000/api/v1/order/success/${tran_id}`,
-        fail_url: "http://localhost:4000/api/v1/order/fail",
+        success_url: `${process.env.SERVER_URL}/api/v1/order/success/${tran_id}`,
+        fail_url: `${process.env.SERVER_URL}/api/v1/order/fail`,
         cancel_url: "http://localhost:3030/cancel",
         ipn_url: "http://localhost:3030/ipn",
         shipping_method: "Courier",
@@ -98,7 +98,7 @@ async function placeOrderController(req, res) {
           paymentMethod,
           paymentStatus: "notpaid",
           totalprice,
-          transId : tran_id
+          transId: tran_id,
         });
         const saveOrder = await newOrder.save();
 

@@ -49,7 +49,7 @@ const signupController = async (req, res) => {
           };
 
           if (user.role === "admin") {
-            req.session.cookie.maxAge = 5 * 60 * 1000;
+            req.session.cookie.maxAge = 20 * 60 * 1000;
           } else {
             req.session.cookie.maxAge = 24 * 60 * 60 * 1000;
           }
@@ -182,7 +182,7 @@ const resetPasswordController = async (req, res) => {
               const updatepassword = await userModel.findOneAndUpdate(
                 { email },
                 { password: hashpassword },
-                { new: true }
+                { new: true },
               );
               updatepassword.save();
               return res.status(200).json({
