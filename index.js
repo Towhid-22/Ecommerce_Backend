@@ -24,7 +24,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://sandbox.sslcommerz.com",
-      "https://clicon-ecommerce-1.onrender.com",
+      "https://clicon-ecommerce-4n8h.vercel.app",
     ],
     credentials: true,
   }),
@@ -45,9 +45,9 @@ app.use(
     saveUninitialized: false,
     name: "ecommerce",
     cookie: {
-      secure: true,
+      secure: false,
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
     },
   }),
