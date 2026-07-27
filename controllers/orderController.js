@@ -98,7 +98,7 @@ async function placeOrderController(req, res) {
           postcode,
           paymentMethod,
           paymentStatus: "notpaid",
-          totalprice,
+          totalPrice,
           transId: tran_id,
         });
         const saveOrder = await newOrder.save();
