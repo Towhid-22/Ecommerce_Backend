@@ -42,9 +42,9 @@ const orderSchema = new mongoose.Schema(
       enum: ["COD", "ONLINE"],
       default: "COD",
     },
-    totalprice: {
+    totalPrice: {
       type: Number,
-      // default: 0,
+      required: true,
     },
     paymentStatus: {
       type: String,
@@ -62,7 +62,7 @@ const orderSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Order", orderSchema);

@@ -17,7 +17,7 @@ async function placeOrderController(req, res) {
       postcode,
       paymentMethod,
       cartItems,
-      totalprice,
+      totalPrice,
     } = req.body;
 
     if (
@@ -27,7 +27,8 @@ async function placeOrderController(req, res) {
       !city ||
       !postcode ||
       !paymentMethod ||
-      !cartItems
+      !cartItems ||
+      !totalPrice
     ) {
       return res
         .status(400)
@@ -43,7 +44,7 @@ async function placeOrderController(req, res) {
         postcode,
         paymentMethod,
         paymentStatus: "notpaid",
-        totalprice,
+        totalPrice,
       });
       newOrder.save();
       res.status(200).json({
@@ -56,7 +57,7 @@ async function placeOrderController(req, res) {
       const tran_id = Date.now() + Math.random().toString(36).substring(2, 15);
 
       const data = {
-        total_amount: totalprice,
+        total_amount: totalPrice,
         currency: "BDT",
         tran_id: tran_id,
         success_url: `${process.env.SERVER_URL}/api/v1/order/success/${tran_id}`,
