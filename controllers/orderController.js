@@ -27,14 +27,12 @@ async function placeOrderController(req, res) {
       !city ||
       !postcode ||
       !paymentMethod ||
-      !cartItems ||
-      !totalprice
+      !cartItems
     ) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required" });
     }
-
     if (paymentMethod == "COD") {
       const newOrder = new orderModel({
         cartItems,
@@ -47,27 +45,18 @@ async function placeOrderController(req, res) {
         paymentStatus: "notpaid",
         totalprice,
       });
-
-      const savedOrder = await newOrder.save();
-
-      return res.status(200).json({
+      newOrder.save();
+      res.status(200).json({
         success: true,
         message: "Order placed successfully",
-        data: savedOrder,
+        data: newOrder,
       });
     } else {
-      const userinfo = await userModel.findById(user);
-
-      if (!userinfo) {
-        return res
-          .status(404)
-          .json({ success: false, message: "User not found" });
-      }
-
+      let userinfo = await userModel.findById(user);
       const tran_id = Date.now() + Math.random().toString(36).substring(2, 15);
 
       const data = {
-        total_amount: totalprice, // was hardcoded to 1100 — must match actual order total
+        total_amount: totalprice,
         currency: "BDT",
         tran_id: tran_id,
         success_url: `${process.env.SERVER_URL}/api/v1/order/success/${tran_id}`,
@@ -98,10 +87,7 @@ async function placeOrderController(req, res) {
       };
 
       const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
-
-      try {
-        const apiResponse = await sslcz.init(data);
-
+      sslcz.init(data).then(async (apiResponse) => {
         const newOrder = new orderModel({
           cartItems,
           user,
@@ -114,29 +100,16 @@ async function placeOrderController(req, res) {
           totalprice,
           transId: tran_id,
         });
+        const saveOrder = await newOrder.save();
 
-        await newOrder.save();
-
-        const GatewayPageURL = apiResponse.GatewayPageURL;
-
-        if (!GatewayPageURL) {
-          return res.status(502).json({
-            success: false,
-            message: "Failed to initiate payment gateway",
-          });
-        }
-
+        let GatewayPageURL = apiResponse.GatewayPageURL;
+        // res.redirect(GatewayPageURL);
         return res.status(200).json({
           success: true,
           message: "Payment method online",
           paymenturl: GatewayPageURL,
         });
-      } catch (sslczError) {
-        return res.status(500).json({
-          success: false,
-          message: sslczError.message || "Payment initialization failed",
-        });
-      }
+      });
     }
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
