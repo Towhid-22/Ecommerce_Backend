@@ -22,7 +22,7 @@ async function addcategoryController(req, res) {
     const category = new categoryModel({
       name,
       description,
-      avatar: `${process.env.SERVER_URL}/uploads/${req.file.filename}`,
+      image: `${process.env.SERVER_URL}/uploads/${req.file.filename}`,
       slug,
     });
 
