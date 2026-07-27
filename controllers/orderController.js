@@ -27,12 +27,14 @@ async function placeOrderController(req, res) {
       !city ||
       !postcode ||
       !paymentMethod ||
-      !cartItems
+      !cartItems ||
+      !totalprice
     ) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required" });
     }
+
     if (paymentMethod == "COD") {
       const newOrder = new orderModel({
         cartItems,
@@ -45,24 +47,33 @@ async function placeOrderController(req, res) {
         paymentStatus: "notpaid",
         totalprice,
       });
-      newOrder.save();
-      res.status(200).json({
+
+      const savedOrder = await newOrder.save();
+
+      return res.status(200).json({
         success: true,
         message: "Order placed successfully",
-        data: newOrder,
+        data: savedOrder,
       });
     } else {
-      let userinfo = await userModel.findById(user);
+      const userinfo = await userModel.findById(user);
+
+      if (!userinfo) {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+
       const tran_id = Date.now() + Math.random().toString(36).substring(2, 15);
 
       const data = {
-        total_amount: 1100,
+        total_amount: totalprice, // was hardcoded to 1100 — must match actual order total
         currency: "BDT",
         tran_id: tran_id,
         success_url: `${process.env.SERVER_URL}/api/v1/order/success/${tran_id}`,
         fail_url: `${process.env.SERVER_URL}/api/v1/order/fail`,
-        cancel_url: "http://localhost:3030/cancel",
-        ipn_url: "http://localhost:3030/ipn",
+        cancel_url: `${process.env.SERVER_URL}/api/v1/order/cancel`, // was hardcoded localhost:3030
+        ipn_url: `${process.env.SERVER_URL}/api/v1/order/ipn`, // was hardcoded localhost:3030
         shipping_method: "Courier",
         product_name: "Computer.",
         product_category: "Electronic",
@@ -87,7 +98,10 @@ async function placeOrderController(req, res) {
       };
 
       const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
-      sslcz.init(data).then(async (apiResponse) => {
+
+      try {
+        const apiResponse = await sslcz.init(data);
+
         const newOrder = new orderModel({
           cartItems,
           user,
@@ -100,16 +114,29 @@ async function placeOrderController(req, res) {
           totalprice,
           transId: tran_id,
         });
-        const saveOrder = await newOrder.save();
 
-        let GatewayPageURL = apiResponse.GatewayPageURL;
-        // res.redirect(GatewayPageURL);
+        await newOrder.save();
+
+        const GatewayPageURL = apiResponse.GatewayPageURL;
+
+        if (!GatewayPageURL) {
+          return res.status(502).json({
+            success: false,
+            message: "Failed to initiate payment gateway",
+          });
+        }
+
         return res.status(200).json({
           success: true,
           message: "Payment method online",
           paymenturl: GatewayPageURL,
         });
-      });
+      } catch (sslczError) {
+        return res.status(500).json({
+          success: false,
+          message: sslczError.message || "Payment initialization failed",
+        });
+      }
     }
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
