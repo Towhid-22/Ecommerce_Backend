@@ -4,31 +4,39 @@ const fs = require("fs");
 const path = require("path");
 
 async function addcategoryController(req, res) {
-  let { name, description } = req.body;
   try {
+    const { name, description } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Category image is required",
+      });
+    }
+
     const slug = slugify(name, {
       replacement: "_",
       lower: true,
     });
 
-    let category = new categoryModel({
+    const category = new categoryModel({
       name,
       description,
-      image: `${process.env.SERVER_URL}/uploads/${req.file.filename}`,
+      avatar: `${process.env.SERVER_URL}/uploads/${req.file.filename}`,
       slug,
     });
 
     await category.save();
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
+      message: "Category added successfully",
       data: category,
-      message: "category added successfull",
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message || "something went wrong",
+      message: error.message || "Something went wrong",
     });
   }
 }
