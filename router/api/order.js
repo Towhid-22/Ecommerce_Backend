@@ -14,14 +14,14 @@ router.post("/success/:id", async (req, res) => {
   let order = await orderModel.findOneAndUpdate(
     { transId: id },
     { paymentStatus: "paid", orderStatus: "processing" },
-    { new: true }
+    { new: true },
   );
   await order.save();
-  return res.redirect("http://localhost:3000/success");
+  return res.redirect(`${process.env.FRONTEND_URL}/success`);
 });
 
 router.post("/fail", (req, res) => {
-  return res.redirect("http://localhost:3000/fail");
+  return res.redirect(`${process.env.FRONTEND_URL}/fail`);
 });
 
 module.exports = router;
